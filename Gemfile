@@ -12,4 +12,5 @@ group :development, :test do
   gem 'autotest'
   gem 'shoulda-matchers'
   gem 'factory_girl_rails'
+  gem 'mocha'
 end
