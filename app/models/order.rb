@@ -1,11 +1,8 @@
 class Order < ActiveRecord::Base
+  include SearchAddress
+
   belongs_to :customer
   has_and_belongs_to_many :items
-  
-  def search_address
-    return @search_address if defined?(@search_address)
-    @search_address = "#{address} #{region}"
-  end
   
   def weight
     return @weight if defined?(@weight)
@@ -35,16 +32,6 @@ class Order < ActiveRecord::Base
   end
   
   private
-  
-  def region
-    if [city, state, zip].all?(&:blank?)
-      ''
-    elsif zip.blank?
-      "#{city}, #{state}"
-    else
-      zip
-    end
-  end
   
   def usps_shipping_cost
     2.0 + items.map(&:weight).sum

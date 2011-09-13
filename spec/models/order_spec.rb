@@ -4,40 +4,7 @@ describe Order do
   it { should belong_to :customer }
   it { should have_and_belong_to_many :items }
   
-  describe "search_address" do
-    before { @order = Factory.build :order }
-    subject { @order.search_address }
-    
-    describe "when all address fields are present" do
-      it { should include(@order.address) }
-      it { should include(@order.zip) }
-
-      it { should_not include(@order.city) }
-      it { should_not include(@order.state) }
-      it { should_not include(@order.phone) }
-    end
-    
-    describe "when zip is missing" do
-      before { @order.zip = '' }
-
-      it { should include(@order.address) }
-      it { should include(@order.city) }
-      it { should include(@order.state) }
-
-      it { should_not include(@order.phone) }
-    end
-    
-    describe "when city, state, and zip are missing" do
-      before { @order.attributes = {:city => '', :state => '', :zip => ''} }
-      
-      it { should include(@order.address) }
-    end
-    
-    it "should memoize the result" do
-      @order.expects(:region).once
-      2.times { @order.search_address }
-    end
-  end
+  specify { subject.methods.should include :search_address }
   
   describe "weight" do
     before do
