@@ -3,11 +3,8 @@ require 'spec_helper'
 describe Shipping::UPS do
   let(:target) { Shipping::UPS }
 
-  specify { target.new(25).name.should == 'UPS' }
-  
-  describe "weight" do
-    subject { target.new(25).weight }
-    it { should == 25 }
+  it_behaves_like "shipping class" do
+    let(:name) { 'UPS' }
   end
 
   describe "cost" do

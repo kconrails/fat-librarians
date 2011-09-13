@@ -3,10 +3,9 @@ require 'spec_helper'
 describe Shipping::Base do
   subject { Shipping::Base.new 25 }
   
-  specify { subject.name.should == 'Base' }
-  
-  it "stores the weight" do
-    subject.weight.should == 25
+  it_behaves_like "shipping class" do
+    let(:target) { Shipping::Base }
+    let(:name) { 'Base' }
   end
 
   it "costs ten cents per pound" do
