@@ -1,0 +1,44 @@
+= skinny models, fat (lib)rarians
+
+We've gotten a lot of mileage out of the the mantra 
+"skinny controllers, fat models".  It has resulted in
+huge gains in test speed and maintainability. But many
+ruby developers who got there via Rails don't have a high
+comfort level with pure ruby classes.
+
+I recently gave a talk on this at the monthlyKansas City Ruby
+meeting.  The benefits include *much* faster tests, dryer code,
+and a much more organized class structure.
+
+== Video
+
+This was a recorded presentation, so a link to the video is coming soon.
+
+== Branches
+
+This repository has four main branches, for each stage of development
+as I refactor the app with best practices.
+
+=== 1-initial
+
+This is the initial application that is unrefactored and more typical
+of a first-draft Rails app.
+
+=== 2-abstract-search-address
+
+In this branch, I abstract the common search_address method into
+a module that can be mixed into any class that contains the
+necessary address accessors.  I test drive this, and the corresponding
+specs are now only run once - against the library - instead of being
+run fully on each address-enable model.
+
+=== 3-create-shipping-models
+
+To DRY up the order model, I abstract the shipping methods into a class
+hierarchy of shipping carriers.  Again, this is test-driven so the
+test suite gets a huge benefit as well.
+
+=== 4-create-shared-examples-for-shipping
+
+The test suite for shipping classes are now DRY'd up using RSpec's
+shared examples.

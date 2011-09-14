@@ -2,8 +2,8 @@ module Shipping
   class Base
     attr_accessor :weight
     
-    def initialize weight
-      @weight = weight.to_f
+    def initialize weight = nil
+      @weight = weight.nil? ? 1 : weight.to_f
     end
     
     def name

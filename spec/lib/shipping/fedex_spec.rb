@@ -1,22 +1,19 @@
 require 'spec_helper'
 
 describe Shipping::FedEx do
-  let(:target) { Shipping::FedEx.new 25 }
+  let(:target) { Shipping::FedEx }
 
-  specify { target.name.should == 'FedEx' }
-
-  describe "weight" do
-    subject { target.weight }
-    it { should == 25 }
+  it_behaves_like "shipping class" do
+    let(:name) { 'FedEx' }
   end
 
   describe "cost" do
-    subject { target.cost }
+    subject { target.new.cost }
     it { should == 49.95}
   end
   
   describe "days" do
-    subject { target.days }
+    subject { target.new.days }
     it { should == 1 }
   end
 end
