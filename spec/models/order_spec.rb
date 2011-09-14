@@ -4,50 +4,17 @@ describe Order do
   it { should belong_to :customer }
   it { should have_and_belong_to_many :items }
   
-  describe "search_address" do
-    before { @order = Factory.build :order }
-    subject { @order.search_address }
-    
-    describe "when all address fields are present" do
-      it { should include(@order.address) }
-      it { should include(@order.zip) }
-
-      it { should_not include(@order.city) }
-      it { should_not include(@order.state) }
-      it { should_not include(@order.phone) }
-    end
-    
-    describe "when zip is missing" do
-      before { @order.zip = '' }
-
-      it { should include(@order.address) }
-      it { should include(@order.city) }
-      it { should include(@order.state) }
-
-      it { should_not include(@order.phone) }
-    end
-    
-    describe "when city, state, and zip are missing" do
-      before { @order.attributes = {:city => '', :state => '', :zip => ''} }
-      
-      it { should include(@order.address) }
-    end
-    
-    it "should memoize the result" do
-      @order.expects(:region).once
-      2.times { @order.search_address }
-    end
-  end
+  specify { subject.methods.should include :search_address }
   
   describe "weight" do
     before do
       @order = Factory :order
-      3.times { @order.items.build Factory.attributes_for(:item, :weight => 1.2) }
+      2.times { @order.items.build Factory.attributes_for(:item, :weight => 1.2) }
     end
     
     subject { @order.weight }
     
-    it('sums the weights of its items'){ should == 3.6 }
+    it('sums the weights of its items'){ should == 2.4 }
     
     it "memoizes the result" do
       @order.expects(:items).returns([]).once
@@ -55,102 +22,17 @@ describe Order do
     end
   end
   
-  describe "shipping_cost" do
-    def self.calculates_cost_for delivery, method
-      describe "when delivery is #{delivery}" do
-        before { @order.delivery = delivery }
-        subject { @order.shipping_cost }
-
-        it { should == @order.send(method) }
-      end
-    end
-    
+  describe "shipping" do
     before do
-      @order = Factory :order
-      3.times { @order.items.build Factory.attributes_for(:item) }
+      @order = Factory :order, :delivery => 'FedEx'
+      2.times { @order.items.build Factory.attributes_for(:item, :weight => 1.2) }
     end
     
-    calculates_cost_for 'USPS',  :usps_shipping_cost
-    calculates_cost_for 'UPS',   :ups_shipping_cost
-    calculates_cost_for 'FedEx', :fedex_shipping_cost
-  end
-  
-  describe "shipping_days" do
-    def self.calculates_days_for delivery, method
-      describe "when delivery is #{delivery}" do
-        before { @order.delivery = delivery }
-        subject { @order.shipping_days }
-
-        it { should == @order.send(method) }
-      end
-    end
+    subject { @order.shipping }
     
-    before do
-      @order = Factory :order
-      3.times { @order.items.build Factory.attributes_for(:item) }
-    end
-    
-    calculates_days_for 'USPS',  :usps_shipping_days
-    calculates_days_for 'UPS',   :ups_shipping_days
-    calculates_days_for 'FedEx', :fedex_shipping_days
-  end
-  
-  describe "usps delivery" do
-    before do
-      @order = Factory :order
-      2.times { @order.items.build Factory.attributes_for(:item, :weight => 3, :price => 7) }
-    end
-
-    describe "usps_shipping_cost" do
-      subject { @order.send(:usps_shipping_cost) }
-      it("is $2 plus $1 per pound"){ should == 8 }
-    end
-    
-    describe "usps_shipping_days" do
-      subject { @order.send(:usps_shipping_days) }
-      it { should == 5 }
-    end
-  end
-  
-  describe "ups delivery" do
-    before do
-      @order = Factory :order
-      2.times { @order.items.build Factory.attributes_for(:item, :weight => 3, :price => 7) }
-    end
-
-    describe "ups_shipping_cost" do
-      subject { @order.send(:ups_shipping_cost) }
-      it("is $2 plus $1.50 per pound"){ should == 11 }
-    end
-    
-    describe "ups_shipping_days" do
-      subject { @order.send(:ups_shipping_days) }
-      
-      describe "when total weight is under 5 pounds" do
-        before { @order.items.first.weight = 1 }
-        it { should == 2 }
-      end
-      
-      describe "when total weight is 5 pounds or more" do
-        it { should == 6 }
-      end
-    end
-  end
-  
-  describe "fedex delivery" do
-    before do
-      @order = Factory :order
-      2.times { @order.items.build Factory.attributes_for(:item, :weight => 3, :price => 7) }
-    end
-
-    describe "fedex_shipping_cost" do
-      subject { @order.send(:fedex_shipping_cost) }
-      it{ should == 49.95 }
-    end
-    
-    describe "fedex_shipping_days" do
-      subject { @order.send(:fedex_shipping_days) }
-      it { should == 1 }
-    end
+    specify { subject.methods.should include(:name) }
+    specify { subject.methods.should include(:weight) }
+    specify { subject.methods.should include(:cost) }
+    specify { subject.methods.should include(:days) }
   end
 end
