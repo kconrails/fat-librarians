@@ -1,6 +1,6 @@
 = skinny models, fat (lib)rarians
 
-We've gotten a lot of mileage out of the the mantra 
+We've gotten a lot of mileage out of the mantra 
 "skinny controllers, fat models".  It has resulted in
 huge gains in test speed and maintainability. But many
 ruby developers who got there via Rails don't have a high
